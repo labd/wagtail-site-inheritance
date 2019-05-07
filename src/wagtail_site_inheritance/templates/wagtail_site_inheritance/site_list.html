@@ -1,0 +1,37 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n %}
+
+{% block titletag %}{% trans "Registered 2FA devices" %}{% endblock %}
+{% block content %}
+    {% trans "Site Inheritance Settings" as prefs_str %}
+    {% include "wagtailadmin/shared/header.html" with title=prefs_str %}
+
+    <div class="nice-padding">
+        <table class="listing">
+                <thead>
+                    <tr>
+                        <th class="name">
+                            {% trans "Site" %}
+                        </th>
+                        <th class="name">
+                            {% trans "Inherits" %}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for site in object_list %}
+                        <tr>
+                            <td class="title">
+                                {{ site }}
+                            </td>
+                            <td>
+                                {{ site.inheritance_info.parent }}
+                            </td>
+                        </li>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        <a href="{% url 'wagtail_site_inheritance_create' %}" class="button">{% trans 'New Association' %}</a>
+    </div>
+{% endblock %}

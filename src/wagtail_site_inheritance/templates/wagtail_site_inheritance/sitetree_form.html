@@ -1,0 +1,25 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n %}
+
+{% trans "Add new 2FA device" as titletag %}
+{% block titletag %}{{ titletag }}{% endblock %}
+{% block content %}
+    {% trans "Two Factor Settings" as prefs_str %}
+    {% include "wagtailadmin/shared/header.html" with title=prefs_str %}
+
+
+    <div class="nice-padding">
+        <form action="" method="POST" novalidate>
+            {% csrf_token %}
+            <ul class="fields">
+                {% for field in form %}
+                    {% include "wagtailadmin/shared/field_as_li.html" with field=field %}
+                {% endfor %}
+                <li class="submit">
+                    <a href="{% url 'wagtail_site_inheritance' %}" class="button button-secondary">{% trans "Cancel" %}</a>
+                    <input type="submit" value="{% if form.instance.confirmed %}{% trans 'Update' %}{% else %}{% trans 'Create' %}{% endif %}" class="button" />
+                </li>
+            </ul>
+        </form>
+    </div>
+{% endblock %}
