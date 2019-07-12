@@ -1,7 +1,7 @@
 {% extends "wagtailadmin/base.html" %}
 {% load i18n %}
 
-{% block titletag %}{% trans "Registered 2FA devices" %}{% endblock %}
+{% block titletag %}{% trans "Site Inheritance Settings" %}{% endblock %}
 {% block content %}
     {% trans "Site Inheritance Settings" as prefs_str %}
     {% include "wagtailadmin/shared/header.html" with title=prefs_str %}
@@ -27,7 +27,7 @@
                             <td>
                                 {{ site.inheritance_info.parent }}
                             </td>
-                        </li>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
