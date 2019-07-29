@@ -5,7 +5,7 @@ from wagtail.admin.edit_handlers import ObjectList, TabbedInterface
 from .forms import InheritedPageForm
 
 
-def create_edit_handler(cls):
+def create_edit_handler(cls, base_form_class=InheritedPageForm):
     tabs = []
 
     if cls.content_panels:
@@ -21,7 +21,7 @@ def create_edit_handler(cls):
             )
         )
 
-    edit_handler = InheritedTabbedInterface(tabs, base_form_class=InheritedPageForm)
+    edit_handler = InheritedTabbedInterface(tabs, base_form_class=base_form_class)
     return edit_handler.bind_to(model=cls)
 
 
