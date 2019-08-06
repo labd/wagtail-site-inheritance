@@ -1,6 +1,3 @@
-from django import forms
-from django.utils.translation import ugettext as _
-
 from wagtail.admin.forms.pages import WagtailAdminPageForm
 
 
@@ -8,7 +5,11 @@ class InheritedPageForm(WagtailAdminPageForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if self.instance and self.instance.inherit_from_page:
+        if (
+            self.instance
+            and hasattr(self.instance, 'inherit_from_page')
+            and self.instance.inherit_from_page
+        ):
             inherit_readonly_fields = getattr(
                 self.instance, "inherit_readonly_fields", []
             )
