@@ -42,6 +42,15 @@ class SiteInheritanceItem(models.Model):
 
 
 class PageInheritanceMixin:
+    def relative_url(self, current_site, request=None):
+        """Always return a relative URL.
+
+        We do this by providing the site of the page requested instead of the default
+        implementation, this will always strip the domain from the URL.
+
+        """
+        return super().relative_url(current_site=self.get_site(), request=None)
+
     @cached_property
     def is_inherited(self):
         return getattr(self, "_is_inherited", False)  # Set via annotation
