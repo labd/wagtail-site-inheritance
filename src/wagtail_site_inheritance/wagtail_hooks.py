@@ -1,30 +1,20 @@
-from django.conf import settings
 from django.conf.urls import url
-from django.db.models import BooleanField, Case, CharField, F, Value, When
+from django.db.models import BooleanField, Case, Value, When
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from wagtail.admin import widgets as wagtailadmin_widgets
-from wagtail.admin.menu import MenuItem
 from wagtail.core import hooks
 from wagtail.core.models import Site
-from wagtail.users.widgets import UserListingButton
 from wagtail_site_inheritance import models, views
+from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
+
+from wagtail_site_inheritance.models import SiteTree
 
 
 @hooks.register("register_admin_urls")
 def urlpatterns():
     return [
-        url(
-            r"^site-inheritance/$",
-            views.SiteInheritanceListView.as_view(),
-            name="wagtail_site_inheritance",
-        ),
-        url(
-            r"^site-inheritance/create$",
-            views.SiteInheritanceCreateView.as_view(),
-            name="wagtail_site_inheritance_create",
-        ),
         url(
             r"^site-inheritance/clone-inherited-page/(?P<parent_pk>\d+)/(?P<pk>\d+)$",
             views.PageCloneInheritedView.as_view(),
@@ -33,14 +23,16 @@ def urlpatterns():
     ]
 
 
-@hooks.register("register_settings_menu_item")
-def register_menu_item():
-    return MenuItem(
-        "Site Inheritance",
-        reverse("wagtail_site_inheritance"),
-        classnames="icon icon-link",
-        order=10000,
-    )
+class SiteTreeModelAdmin(ModelAdmin):
+    model = SiteTree
+    menu_icon = "link"
+    menu_label = _("Site Inheritance")
+    menu_order = 10000
+    list_filter = ["parent"]
+    list_display = ["parent", "site"]
+    add_to_settings_menu = True
+
+modeladmin_register(SiteTreeModelAdmin)
 
 
 @hooks.register("construct_explorer_page_queryset")

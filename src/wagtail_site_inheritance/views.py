@@ -1,23 +1,9 @@
 from django.db import transaction
-from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import (
-    CreateView, DeleteView, FormView, ListView, UpdateView, View)
+from django.shortcuts import redirect
+from django.views.generic import View
 
-from wagtail.core.models import Page, Site
+from wagtail.core.models import Page
 from wagtail_site_inheritance import models
-
-
-class SiteInheritanceListView(ListView):
-    model = models.SiteTree
-    template_name = 'wagtail_site_inheritance/site_list.html'
-
-    def get_queryset(self):
-        return Site.objects.select_related('inheritance_info__parent')
-
-
-class SiteInheritanceCreateView(CreateView):
-    model = models.SiteTree
-    fields = ['site', 'parent']
 
 
 class PageCloneInheritedView(View):
