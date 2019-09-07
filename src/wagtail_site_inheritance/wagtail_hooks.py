@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from wagtail.core import hooks
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 
-from wagtail_site_inheritance import models
+from wagtail_site_inheritance import models, permissions
 
 
 class SiteInheritanceAdmin(ModelAdmin):
@@ -12,8 +12,9 @@ class SiteInheritanceAdmin(ModelAdmin):
     menu_label = _("Site Inheritance")
     menu_order = 10000
     list_filter = ["parent"]
-    list_display = ["parent", "site"]
+    list_display = ["site", "parent"]
     add_to_settings_menu = True
+    permission_helper_class = permissions.SiteInheritancePermissionHelper
 
 
 modeladmin_register(SiteInheritanceAdmin)

@@ -1,22 +1,21 @@
 from django.db import models
 
+from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel
 from wagtail.core.models import Page, Site
+
 from wagtail_site_inheritance.wagtail_forms import SiteInheritanceAdminForm
 
 
 class SiteInheritance(models.Model):
-    site = models.OneToOneField(
-        Site, related_name="inheritance_info", on_delete=models.CASCADE
-    )
     parent = models.ForeignKey(
         Site, related_name="site_children", on_delete=models.PROTECT
     )
+    site = models.OneToOneField(
+        Site, related_name="inheritance_info", on_delete=models.CASCADE
+    )
 
     base_form_class = SiteInheritanceAdminForm
-
-    @property
-    def root_page(self):
-        return self.parent.root_page
+    panels = [MultiFieldPanel(children=[FieldPanel("parent"), FieldPanel("site")])]
 
 
 class PageInheritanceItem(models.Model):
