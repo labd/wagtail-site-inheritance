@@ -5,9 +5,9 @@ from wagtail.admin.forms import WagtailAdminModelForm
 
 class SiteInheritanceAdminForm(WagtailAdminModelForm):
     class Meta:
-        fields = ["site", "parent"]
+        fields = ["parent", "site"]
 
-    def clean_parent(self):
+    def clean_site(self):
         """Validate the site and parent site root pages.
 
         A valid SiteTree can only be created if the root pages specific page type are the
