@@ -16,6 +16,9 @@ coverage:
 docs:
 	$(MAKE) -C docs html
 
+format:
+	black --target-version=py36 --exclude=migrations .
+
 release:
 	rm -rf dist/*
 	python setup.py sdist bdist_wheel
