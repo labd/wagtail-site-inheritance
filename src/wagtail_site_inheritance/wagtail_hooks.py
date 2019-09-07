@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from wagtail.core import hooks
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 
-from wagtail_site_inheritance import models, permissions
+from wagtail_site_inheritance import models, permissions, views
 
 
 class SiteInheritanceAdmin(ModelAdmin):
@@ -14,6 +14,7 @@ class SiteInheritanceAdmin(ModelAdmin):
     list_filter = ["parent"]
     list_display = ["site", "parent"]
     add_to_settings_menu = True
+    delete_view_class = views.SiteInheritanceDeleteView
     permission_helper_class = permissions.SiteInheritancePermissionHelper
 
 
@@ -72,7 +73,7 @@ def update_or_create_copies(request, page):
         "content_type",
     ]
 
-    items = models.PageInheritanceItem.objects.filter(page=page)
+    items = models.PageInheritanceItem.objects.filter(page=page, modified=False)
     if items.exists():
         values = {}
         for field in page._meta.get_fields():
@@ -107,8 +108,8 @@ def update_or_create_copies(request, page):
 
     # Mark edited page as modified
     item = models.PageInheritanceItem.objects.filter(
-        inherited_page=page, modified=True
+        inherited_page=page, modified=False
     ).first()
     if item:
-        item.modified = False
+        item.modified = True
         item.save(update_fields=["modified"])

@@ -20,7 +20,7 @@ class SiteInheritanceAdminForm(WagtailAdminModelForm):
             raise forms.ValidationError(
                 _("Both sites should have the same root_page type")
             )
-        return parent
+        return site
 
     def save(self, **kwargs):
         """Save the SiteTree and make sure the homepages get linked.
