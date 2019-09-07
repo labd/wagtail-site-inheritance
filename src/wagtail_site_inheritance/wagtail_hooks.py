@@ -1,30 +1,13 @@
-from django.conf.urls import url
-from django.db.models import BooleanField, Case, Value, When
-from django.urls import reverse
+from django.db.models import OneToOneField
 from django.utils.translation import ugettext_lazy as _
-
-from wagtail.admin import widgets as wagtailadmin_widgets
 from wagtail.core import hooks
-from wagtail.core.models import Site
-from wagtail_site_inheritance import models, views
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 
-from wagtail_site_inheritance.models import SiteTree
+from wagtail_site_inheritance import models
 
 
-@hooks.register("register_admin_urls")
-def urlpatterns():
-    return [
-        url(
-            r"^site-inheritance/clone-inherited-page/(?P<parent_pk>\d+)/(?P<pk>\d+)$",
-            views.PageCloneInheritedView.as_view(),
-            name="wagtail_site_inheritance_clone_inherited_page",
-        ),
-    ]
-
-
-class SiteTreeModelAdmin(ModelAdmin):
-    model = SiteTree
+class SiteInheritanceAdmin(ModelAdmin):
+    model = models.SiteInheritance
     menu_icon = "link"
     menu_label = _("Site Inheritance")
     menu_order = 10000
@@ -32,57 +15,99 @@ class SiteTreeModelAdmin(ModelAdmin):
     list_display = ["parent", "site"]
     add_to_settings_menu = True
 
-modeladmin_register(SiteTreeModelAdmin)
+
+modeladmin_register(SiteInheritanceAdmin)
 
 
-@hooks.register("construct_explorer_page_queryset")
-def alter_page_explorer(parent_page, pages, request):
-    site = parent_page.get_site()
-    if not site:
-        return pages
+# FIXME: This is a working example of the copy / sync methods, it needs refactoring
+@hooks.register("after_edit_page")
+@hooks.register("after_create_page")
+def update_or_create_copies(request, page):
+    """Copy the pages to all inherited sites.
 
-    try:
-        inherited_root = site.inheritance_info.root_page
-    except Site.inheritance_info.RelatedObjectDoesNotExist:
-        return pages
+    We only copy the pages when they're published as well, this way the other sites won't
+    be able to see content which is still a draft.
 
-    if inherited_root is None:
-        return pages
+    """
+    parent_page = page.get_parent()
+    parent_page_perms = parent_page.permissions_for_user(request.user)
 
-    # TODO: get correct children
-    path = parent_page.relative_url(site)
-    inherited_pages = inherited_root.get_children().exclude(
-        pk__in=models.SiteInheritanceItem.objects.filter(
-            inherited_page__in=pages
-        ).values("page")
+    is_publishing = (
+        bool(request.POST.get("action-publish"))
+        and parent_page_perms.can_publish_subpage()
     )
+    if not is_publishing:
+        return
 
-    all_pages = pages | inherited_pages
+    # Create non existing pages in other trees.
+    inherited_parents = [
+        o.inherited_page.get_parent()
+        for o in models.PageInheritanceItem.objects.filter(page=page)
+    ]
+    for inheritance_item in models.PageInheritanceItem.objects.filter(page=parent_page):
+        if inheritance_item.inherited_page in inherited_parents:
+            continue
 
-    all_pages = all_pages.annotate(
-        _is_inherited=Case(
-            When(path__startswith=parent_page.path, then=Value(0)),
-            default=Value(1),
-            output_field=BooleanField(),
+        page_copy = page.copy(
+            to=inheritance_item.inherited_page,
+            copy_revisions=False,
+            keep_live=False,  # We do this so we won't get a new draft revision
+            user=request.user,
+            update_attrs={"live": True, "has_unpublished_changes": False},
         )
-    )
-    return all_pages
 
+        models.PageInheritanceItem.objects.create(page=page, inherited_page=page_copy)
 
-@hooks.register("construct_page_listing_buttons")
-def page_listing_buttons(buttons, page, page_perms, is_parent=False, context=None):
-    if getattr(page, 'is_inherited', False):
-        buttons.clear()
-        parent_page = context.get("parent_page")
+    # Update existing pages (sync all required content)
+    skip_fields = [
+        "id",
+        "path",
+        "depth",
+        "numchild",
+        "url_path",
+        "path",
+        "index_entries",
+        "live_revision",
+        "content_type",
+    ]
 
-        if parent_page:
-            buttons.append(
-                wagtailadmin_widgets.Button(
-                    "Edit",
-                    reverse(
-                        "wagtail_site_inheritance_clone_inherited_page",
-                        args=[parent_page.id, page.id],
-                    ),
-                    priority=10,
-                )
+    items = models.PageInheritanceItem.objects.filter(page=page)
+    if items.exists():
+        values = {}
+        for field in page._meta.get_fields():
+            # FIXME: Instead of stepping over difficult fields we should copy their
+            # contents too, the wagtail.core.Page.copy() method has some examples on how
+            # to do that.
+            if (
+                field.name in skip_fields
+                or field.auto_created
+                or field.many_to_many
+                or (isinstance(field, OneToOneField) and field.remote_field.parent_link)
+            ):
+                continue
+
+            values[field.name] = getattr(page, field.name)
+
+        for inheritance_item in items:
+            # FIXME: Update readonly fields instead of stepping over the complete page.
+            if not inheritance_item.modified:
+                continue
+
+            copy_page = inheritance_item.inherited_page
+            for field_name, value in values.items():
+                setattr(copy_page, field_name, value)
+
+            copy_page.save()
+            revision = copy_page.save_revision(
+                user=request.user,
+                submitted_for_moderation=bool(request.POST.get("action-submit")),
             )
+            revision.publish()
+
+    # Mark edited page as modified
+    item = models.PageInheritanceItem.objects.filter(
+        inherited_page=page, modified=True
+    ).first()
+    if item:
+        item.modified = False
+        item.save(update_fields=["modified"])
