@@ -107,9 +107,6 @@ def update_or_create_copies(request, page):
             revision.publish()
 
     # Mark edited page as modified
-    item = models.PageInheritanceItem.objects.filter(
+    models.PageInheritanceItem.objects.filter(
         inherited_page=page, modified=False
-    ).first()
-    if item:
-        item.modified = True
-        item.save(update_fields=["modified"])
+    ).update(modified=True)
