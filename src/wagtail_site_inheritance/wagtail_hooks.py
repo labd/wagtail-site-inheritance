@@ -1,5 +1,6 @@
 from django.db.models import OneToOneField
 from django.utils.translation import ugettext_lazy as _
+from modelcluster.models import get_all_child_m2m_relations, get_all_child_relations
 from wagtail.core import hooks
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 
@@ -87,9 +88,10 @@ def sync_existing_pages(request, page):
         "content_type",
     ]
 
-    items = models.PageInheritanceItem.objects.filter(page=page, modified=False)
+    items = models.PageInheritanceItem.objects.filter(page=page)
     if items.exists():
         values = {}
+        customizable_fields = getattr(page, "customizable_fields", [])
         for field in page._meta.get_fields():
             # FIXME: Instead of stepping over difficult fields we should copy their
             # contents too, the wagtail.core.Page.copy() method has some examples on how
@@ -104,14 +106,35 @@ def sync_existing_pages(request, page):
 
             values[field.name] = getattr(page, field.name)
 
-        for inheritance_item in items:
-            # FIXME: Update readonly fields instead of stepping over the complete page.
-            if not inheritance_item.modified:
-                continue
+        # copy child m2m relations
+        for related_field in get_all_child_m2m_relations(page):
+            field = getattr(page, related_field.name)
+            if field and hasattr(field, 'all'):
+                values = field.all()
+                if values:
+                    values[related_field.name] = values
 
-            copy_page = inheritance_item.inherited_page
+        for inheritance_item in items:
+            # always get the specific class instance, or the revision will only contain the Page attributes
+            copy_page = inheritance_item.inherited_page.specific
+
             for field_name, value in values.items():
+                if inheritance_item.modified and field_name in customizable_fields:
+                    continue
                 setattr(copy_page, field_name, value)
+
+            # Copy child objects
+            for child_relation in get_all_child_relations(page):
+                accessor_name = child_relation.get_accessor_name()
+
+                parental_key_name = child_relation.field.attname
+                child_objects = getattr(page, accessor_name, None)
+
+                if child_objects:
+                    for child_object in child_objects.all():
+                        child_object.pk = None
+                        setattr(child_object, parental_key_name, copy_page.id)
+                        child_object.save()
 
             copy_page.save()
             revision = copy_page.save_revision(
