@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_class %}template-other-page{% endblock %}
+
+{% block content %}
+<div class="main-text">
+    <h1>{{ self.intro }}</h1>
+    <p>{{ self.custom_content }}</p>
+</div>
+{% endblock content %}
