@@ -3,12 +3,12 @@ from setuptools import find_packages, setup
 docs_require = ["sphinx>=1.4.0"]
 
 tests_require = [
-    "coverage==.4.2",
-    "pytest==3.0.5",
-    "pytest-django==3.1.2",
+    "coverage>=3.7.0",
+    "pytest>=3.6",
+    "pytest-django==3.5.1",
     # Linting
     "isort==4.2.5",
-    "flake8==3.0.3",
+    "flake8>=3.6.0",
     "flake8-blind-except==0.1.1",
     "flake8-debugger==1.4.0",
 ]
