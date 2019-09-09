@@ -11,5 +11,6 @@ class HomePage(PageInheritanceMixin, Page):
 
 class OtherPage(PageInheritanceMixin, Page):
     intro = models.CharField(max_length=500)
+    custom_content = models.CharField(max_length=500, default="")
 
-    content_panels = Page.content_panels + [FieldPanel("intro")]
+    content_panels = Page.content_panels + [FieldPanel("intro"), FieldPanel("custom_content")]
