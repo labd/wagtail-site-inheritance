@@ -4,11 +4,11 @@ from wagtail_site_inheritance.models import PageInheritanceItem
 
 
 def remove_copies(sender, instance, **kwargs):
-    """Remove all published copies when un publishing a page.
+    """
+    Remove all published copies when unpublishing a page.
 
     For now we remove all non modified copies of the inherited page on unpublish for the
     modified copies we only remove the page link and make them "stand-alone".
-
     """
     items = PageInheritanceItem.objects.filter(page=instance)
     if not items.exists():
