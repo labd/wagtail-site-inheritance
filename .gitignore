@@ -15,6 +15,8 @@
 /htmlcov/
 /.mypy_cache/
 
+# Demo
+db.sqlite3
 
 # Editors
 .idea/
