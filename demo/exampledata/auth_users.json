@@ -1,0 +1,19 @@
+[
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$150000$ZcbYfnAV5cra$mV4PH5Mey46gO+5AVEgZ8wAWhSW+c7lrdEB41tt/fsc=",
+        "last_login": null,
+        "is_superuser": true,
+        "username": "admin@labdigital.nl",
+        "first_name": "",
+        "last_name": "",
+        "email": "admin@labdigital.nl",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2019-09-09T12:07:03.455Z",
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]
