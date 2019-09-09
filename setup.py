@@ -6,6 +6,7 @@ tests_require = [
     "coverage>=3.7.0",
     "pytest>=3.6",
     "pytest-django==3.5.1",
+    "wagtail-factories==2.0.0",
     # Linting
     "isort==4.2.5",
     "flake8>=3.6.0",
