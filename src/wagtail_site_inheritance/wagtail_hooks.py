@@ -41,10 +41,20 @@ def update_or_create_copies(request, page):
     if not is_publishing:
         return
 
+    create_non_existing_pages(request, page, parent_page)
+    sync_existing_pages(request, page)
+
+    # Mark edited page as modified
+    models.PageInheritanceItem.objects.filter(
+        inherited_page=page, modified=False
+    ).update(modified=True)
+
+
+def create_non_existing_pages(request, page, parent_page):
     # Create non existing pages in other trees.
     inherited_parents = [
-        o.inherited_page.get_parent()
-        for o in models.PageInheritanceItem.objects.filter(page=page)
+        pii.inherited_page.get_parent()
+        for pii in models.PageInheritanceItem.objects.filter(page=page)
     ]
     for inheritance_item in models.PageInheritanceItem.objects.filter(page=parent_page):
         if inheritance_item.inherited_page in inherited_parents:
@@ -60,7 +70,11 @@ def update_or_create_copies(request, page):
 
         models.PageInheritanceItem.objects.create(page=page, inherited_page=page_copy)
 
-    # Update existing pages (sync all required content)
+
+def sync_existing_pages(request, page):
+    """
+    Update existing pages (sync all required content).
+    """
     skip_fields = [
         "id",
         "path",
@@ -81,10 +95,10 @@ def update_or_create_copies(request, page):
             # contents too, the wagtail.core.Page.copy() method has some examples on how
             # to do that.
             if (
-                field.name in skip_fields
-                or field.auto_created
-                or field.many_to_many
-                or (isinstance(field, OneToOneField) and field.remote_field.parent_link)
+                    field.name in skip_fields
+                    or field.auto_created
+                    or field.many_to_many
+                    or (isinstance(field, OneToOneField) and field.remote_field.parent_link)
             ):
                 continue
 
@@ -105,8 +119,3 @@ def update_or_create_copies(request, page):
                 submitted_for_moderation=bool(request.POST.get("action-submit")),
             )
             revision.publish()
-
-    # Mark edited page as modified
-    models.PageInheritanceItem.objects.filter(
-        inherited_page=page, modified=False
-    ).update(modified=True)
