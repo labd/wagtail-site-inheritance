@@ -66,7 +66,7 @@ def create_non_existing_pages(request, page, parent_page):
             copy_revisions=False,
             keep_live=False,  # We do this so we won't get a new draft revision
             user=request.user,
-            update_attrs={"live": True, "has_unpublished_changes": False},
+            update_attrs={"has_unpublished_changes": False, "live": True},
         )
 
         models.PageInheritanceItem.objects.create(page=page, inherited_page=page_copy)
@@ -74,45 +74,15 @@ def create_non_existing_pages(request, page, parent_page):
 
 def sync_existing_pages(request, page):
     """
-    Update existing pages (sync all required content).
+    Sync all page content to inherited pages and publish them.
     """
-    skip_fields = [
-        "id",
-        "path",
-        "depth",
-        "numchild",
-        "url_path",
-        "path",
-        "index_entries",
-        "live_revision",
-        "content_type",
-    ]
+    default_exclude_fields = ["id", "path", "depth", "numchild", "url_path", "path", "index_entries"]
+    skip_fields = default_exclude_fields + page.exclude_fields_in_copy + ["live_revision", "content_type"]
 
     items = models.PageInheritanceItem.objects.filter(page=page)
     if items.exists():
-        values = {}
         customizable_fields = getattr(page, "customizable_fields", [])
-        for field in page._meta.get_fields():
-            # FIXME: Instead of stepping over difficult fields we should copy their
-            # contents too, the wagtail.core.Page.copy() method has some examples on how
-            # to do that.
-            if (
-                    field.name in skip_fields
-                    or field.auto_created
-                    or field.many_to_many
-                    or (isinstance(field, OneToOneField) and field.remote_field.parent_link)
-            ):
-                continue
-
-            values[field.name] = getattr(page, field.name)
-
-        # copy child m2m relations
-        for related_field in get_all_child_m2m_relations(page):
-            field = getattr(page, related_field.name)
-            if field and hasattr(field, 'all'):
-                values = field.all()
-                if values:
-                    values[related_field.name] = values
+        values = _get_copyable_fields(page, skip_fields)
 
         for inheritance_item in items:
             # always get the specific class instance, or the revision will only contain the Page attributes
@@ -142,3 +112,33 @@ def sync_existing_pages(request, page):
                 submitted_for_moderation=bool(request.POST.get("action-submit")),
             )
             revision.publish()
+
+
+def _get_copyable_fields(page, skip_fields):
+    """
+    Get all copyable fields + values from a page.
+    """
+    values = {}
+    for field in page._meta.get_fields():
+        # FIXME: Instead of stepping over difficult fields we should copy their
+        # contents too, the wagtail.core.Page.copy() method has some examples on how
+        # to do that.
+        if (
+                field.name in skip_fields
+                or field.auto_created
+                or field.many_to_many
+                or (isinstance(field, OneToOneField) and field.remote_field.parent_link)
+        ):
+            continue
+
+        values[field.name] = getattr(page, field.name)
+    # copy child m2m relations
+    for related_field in get_all_child_m2m_relations(page):
+        if related_field.name in skip_fields:
+            continue
+        field = getattr(page, related_field.name)
+        if field and hasattr(field, "all"):
+            values = field.all()
+            if values:
+                values[related_field.name] = values
+    return values
