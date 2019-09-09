@@ -8,11 +8,11 @@ class SiteInheritanceAdminForm(WagtailAdminModelForm):
         fields = ["parent", "site"]
 
     def clean_site(self):
-        """Validate the site and parent site root pages.
+        """
+        Validate the site and parent site root pages.
 
         A valid SiteTree can only be created if the root pages specific page type are the
         same, otherwise we will get errors when we try to copy the pages.
-
         """
         site = self.cleaned_data.get("site", False)
         parent = self.cleaned_data.get("parent", False)
@@ -23,11 +23,11 @@ class SiteInheritanceAdminForm(WagtailAdminModelForm):
         return site
 
     def save(self, **kwargs):
-        """Save the SiteTree and make sure the homepages get linked.
+        """
+        Save the SiteTree and make sure the homepages get linked.
 
         Since the homepages already exist, we need to mark them as modified, otherwise
         all existing content will be lost.
-
         """
         instance = super().save(**kwargs)
         from wagtail_site_inheritance.models import PageInheritanceItem  # cyclic import
