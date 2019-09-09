@@ -25,11 +25,11 @@ modeladmin_register(SiteInheritanceAdmin)
 @hooks.register("after_edit_page")
 @hooks.register("after_create_page")
 def update_or_create_copies(request, page):
-    """Copy the pages to all inherited sites.
+    """
+    Copy the pages to all inherited sites.
 
     We only copy the pages when they're published as well, this way the other sites won't
     be able to see content which is still a draft.
-
     """
     parent_page = page.get_parent()
     parent_page_perms = parent_page.permissions_for_user(request.user)

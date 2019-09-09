@@ -22,7 +22,7 @@ class PageInheritanceItem(models.Model):
     page = models.ForeignKey(Page, related_name="+", on_delete=models.PROTECT)
     inherited_page = models.ForeignKey(Page, related_name="+", on_delete=models.CASCADE)
 
-    #: Indicates wether the inherited page is modified in it's own tree, this means we
+    #: Indicates whether the inherited page is modified in it's own tree, this means we
     #: don't want to sync all content anymore, only the readonly fields.
     modified = models.BooleanField(default=False)
 
@@ -32,11 +32,11 @@ class PageInheritanceItem(models.Model):
 
 class PageInheritanceMixin:
     def relative_url(self, current_site, request=None):
-        """Always return a relative URL.
+        """
+        Always return a relative URL.
 
         We do this by providing the site of the page requested instead of the default
         implementation, this will always strip the domain from the URL.
-
         """
         return super().relative_url(current_site=self.get_site(), request=None)
 
