@@ -17,6 +17,11 @@ class SiteInheritance(models.Model):
     base_form_class = SiteInheritanceAdminForm
     panels = [MultiFieldPanel(children=[FieldPanel("parent"), FieldPanel("site")])]
 
+    def __str__(self):
+        parent_site = self.parent.site_name or self.parent.hostname
+        child_site = self.site.site_name or self.site.hostname
+        return f"SiteInheritance from {parent_site} to {child_site}"
+
 
 class PageInheritanceItem(models.Model):
     page = models.ForeignKey(Page, related_name="+", on_delete=models.PROTECT)
