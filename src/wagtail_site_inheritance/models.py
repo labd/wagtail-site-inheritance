@@ -34,6 +34,9 @@ class PageInheritanceItem(models.Model):
     class Meta:
         unique_together = [("page", "inherited_page")]
 
+    def __str__(self):
+        return f"Page: {self.page.title} Inherited page: {self.inherited_page.title} Modified: {self.modified}"
+
 
 class PageInheritanceMixin:
     def relative_url(self, current_site, request=None):
