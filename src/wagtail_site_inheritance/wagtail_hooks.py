@@ -76,12 +76,24 @@ def sync_existing_pages(request, page):
     """
     Sync all page content to inherited pages and publish them.
     """
-    default_exclude_fields = ["id", "path", "depth", "numchild", "url_path", "path", "index_entries"]
-    skip_fields = default_exclude_fields + page.exclude_fields_in_copy + ["live_revision", "content_type"]
+    default_exclude_fields = [
+        "id",
+        "path",
+        "depth",
+        "numchild",
+        "url_path",
+        "path",
+        "index_entries",
+    ]
+    skip_fields = (
+        default_exclude_fields
+        + page.exclude_fields_in_copy
+        + ["live_revision", "content_type"]
+    )
 
     items = models.PageInheritanceItem.objects.filter(page=page)
     if items.exists():
-        customizable_fields = getattr(page, "customizable_fields", [])
+        customizable_fields = getattr(page, "editable_inherited_fields", [])
         values = _get_copyable_fields(page, skip_fields)
 
         for inheritance_item in items:
@@ -124,10 +136,10 @@ def _get_copyable_fields(page, skip_fields):
         # contents too, the wagtail.core.Page.copy() method has some examples on how
         # to do that.
         if (
-                field.name in skip_fields
-                or field.auto_created
-                or field.many_to_many
-                or (isinstance(field, OneToOneField) and field.remote_field.parent_link)
+            field.name in skip_fields
+            or field.auto_created
+            or field.many_to_many
+            or (isinstance(field, OneToOneField) and field.remote_field.parent_link)
         ):
             continue
 

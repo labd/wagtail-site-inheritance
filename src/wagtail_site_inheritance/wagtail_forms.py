@@ -21,9 +21,7 @@ class SiteInheritanceAdminForm(WagtailAdminModelForm):
                 _("Both sites should have the same root_page type")
             )
         if site.pk == parent.pk:
-            raise forms.ValidationError(
-                _("Cannot inherit from the same site")
-            )
+            raise forms.ValidationError(_("Cannot inherit from the same site"))
 
         return site
 
