@@ -1,6 +1,7 @@
 from django.db import models
 
 from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel
+from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.core.models import Page, Site
 
 from wagtail_site_inheritance.wagtail_forms import SiteInheritanceAdminForm
@@ -38,6 +39,23 @@ class PageInheritanceItem(models.Model):
         return f"Page: {self.page.title} Inherited page: {self.inherited_page.title} Modified: {self.modified}"
 
 
+class PageInheritanceForm(WagtailAdminPageForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # assumes the default site is the site to inherit from,
+        # the alternative is querying SiteInheritance.
+        site = self.instance.get_site()
+        if not site or (site and site.is_default_site):
+            return
+
+        for field in self.instance.editable_inherited_fields:
+            if field in self.fields:
+                # FIXME: this doesn't work for streamfields...
+                self.fields[field].disabled = True
+
+
 class PageInheritanceMixin:
     def relative_url(self, current_site, request=None):
         """
@@ -56,3 +74,8 @@ class PageInheritanceMixin:
         elif item:
             return f"{title} (Inherited)"
         return title
+
+    base_form_class = PageInheritanceForm
+
+    # fields that can be edited in inherited pages
+    editable_inherited_fields = []
