@@ -26,7 +26,7 @@ release:
 
 exampledata:
 	./manage.py migrate
-	./manage.py loaddata demo/exampledata/users.json
+	./manage.py loaddata demo/exampledata/auth_users.json
 	./manage.py loaddata demo/exampledata/sites.json
 
 
