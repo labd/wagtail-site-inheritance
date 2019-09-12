@@ -44,6 +44,7 @@ class PageInheritanceForm(WagtailAdminPageForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # TODO: use query on PageInheritance, since there will be multiple root sites.
         # assumes the default site is the site to inherit from,
         # the alternative is querying SiteInheritance.
         site = self.instance.get_site()
