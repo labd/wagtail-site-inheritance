@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from wagtail.admin.forms import WagtailAdminModelForm
+from wagtail.core import hooks
 
 
 class SiteInheritanceAdminForm(WagtailAdminModelForm):
