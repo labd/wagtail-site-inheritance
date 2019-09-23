@@ -53,8 +53,9 @@ class PageInheritanceForm(WagtailAdminPageForm):
 
         for field_name, field in self.fields.items():
             if field_name not in self.instance.editable_inherited_fields:
+                ...
                 # FIXME: this doesn't work for streamfields...
-                self.fields[field_name].disabled = True
+                # self.fields[field_name].disabled = True
 
 
 class PageInheritanceMixin:
