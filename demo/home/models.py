@@ -27,4 +27,4 @@ class OtherPage(PageInheritanceMixin, Page):
         StreamFieldPanel("body"),
     ]
 
-    editable_inherited_fields = ["custom_content"]
+    inherit_readonly_fields = ["intro", "body"]
