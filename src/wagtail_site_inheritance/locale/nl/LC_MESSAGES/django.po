@@ -1,0 +1,82 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-25 21:57+0000\n"
+"PO-Revision-Date: 2019-09-25 23:57+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#: apps.py:7
+msgid "Wagtail Site Inheritance"
+msgstr "Wagtail site overerving"
+
+#: forms.py:13
+#, python-format
+msgid "Read only field for %s."
+msgstr "Alleen lezen veld (%s)."
+
+#: forms.py:15
+msgid "Read only field."
+msgstr "Alleen lezen veld."
+
+#: models.py:13
+msgid "parent site"
+msgstr "bovenliggende site"
+
+#: models.py:14
+msgid "Choose the site to inherit from."
+msgstr "Kies de website om vanaf te overerven."
+
+#: models.py:17
+msgid "child site"
+msgstr "onderliggende site"
+
+#: models.py:24
+#, python-format
+msgid "SiteInheritance from %(parent_site)s to %(child_site)s"
+msgstr "Siteovererving van %(parent_site)s naar %(child_site)s"
+
+#: models.py:42
+#, python-format
+msgid ""
+"Page: %(title)s, inherited from: %(inherited_title)s, modified: %(modified)s"
+msgstr ""
+"Pagina: %(title)s, overgenomen van: %(inherited_title)s, gewijzigd: "
+"%(modified)s"
+
+#: models.py:84
+#, python-format
+msgid "%(title)s - (inherited + modified)"
+msgstr "%(title)s - (overgenomen + gewijzigd)"
+
+#: models.py:86
+#, python-format
+msgid "%(title)s - (inherited)"
+msgstr "%(title)s - (overgenomen)"
+
+#: wagtail_forms.py:22
+msgid "Both sites should have the same root_page type."
+msgstr "Beide websites moeten een homepage hebben van hetzelfde type."
+
+#: wagtail_forms.py:25
+msgid "Cannot inherit from the same site."
+msgstr "Kan niet overerven van dezelfde website."
+
+#: wagtail_hooks.py:13
+msgid "Site Inheritance"
+msgstr "Website overerving"
+
+#~ msgid "%(title)s - (Modified inherited)"
+#~ msgstr "%(title)s - (Gewijzigd overgenomen)"

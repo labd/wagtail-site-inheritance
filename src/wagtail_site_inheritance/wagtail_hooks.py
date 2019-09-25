@@ -13,7 +13,7 @@ class SiteInheritanceAdmin(ModelAdmin):
     menu_label = _("Site Inheritance")
     menu_order = 10000
     list_filter = ["parent"]
-    list_display = ["site", "parent"]
+    list_display = ["parent", "site"]
     add_to_settings_menu = True
     delete_view_class = views.SiteInheritanceDeleteView
     permission_helper_class = permissions.SiteInheritancePermissionHelper
