@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel
 from wagtail.admin.forms import WagtailAdminPageForm
@@ -7,22 +8,23 @@ from wagtail.core.models import Page, Site
 from wagtail_site_inheritance.forms import get_readonly_widget
 from wagtail_site_inheritance.wagtail_forms import SiteInheritanceAdminForm
 
-
 class SiteInheritance(models.Model):
     parent = models.ForeignKey(
-        Site, related_name="site_children", on_delete=models.PROTECT
+        Site, verbose_name=_("parent site"), related_name="site_children", on_delete=models.PROTECT,
+        help_text=_("Choose the site to inherit from.")
     )
     site = models.OneToOneField(
-        Site, related_name="inheritance_info", on_delete=models.CASCADE
+        Site, verbose_name=_("child site"), related_name="inheritance_info", on_delete=models.CASCADE
     )
 
     base_form_class = SiteInheritanceAdminForm
     panels = [MultiFieldPanel(children=[FieldPanel("parent"), FieldPanel("site")])]
 
     def __str__(self):
-        parent_site = self.parent.site_name or self.parent.hostname
-        child_site = self.site.site_name or self.site.hostname
-        return f"SiteInheritance from {parent_site} to {child_site}"
+        return _("SiteInheritance from %(parent_site)s to %(child_site)s") % {
+            "parent_site": self.parent,
+            "child_site": self.site
+        }
 
 
 class PageInheritanceItem(models.Model):
@@ -37,7 +39,11 @@ class PageInheritanceItem(models.Model):
         unique_together = [("page", "inherited_page")]
 
     def __str__(self):
-        return f"Page: {self.page.title} Inherited page: {self.inherited_page.title} Modified: {self.modified}"
+        return _("Page: %(title)s, inherited from: %(inherited_title)s, modified: %(modified)s") % {
+            "title": self.page.title,
+            "inherited_title": self.inherited_page.title,
+            "modified": self.modified
+        }
 
 
 class PageInheritanceForm(WagtailAdminPageForm):
@@ -75,9 +81,9 @@ class PageInheritanceMixin:
         title = super().get_admin_display_title()
         item = PageInheritanceItem.objects.filter(inherited_page=self).first()
         if item and item.modified:
-            return f"{title} - (Modified inherited)"
+            return _("%(title)s - (inherited + modified)") % {"title": title}
         elif item:
-            return f"{title} (Inherited)"
+            return _("%(title)s - (inherited)") % {"title": title}
         return title
 
     base_form_class = PageInheritanceForm

@@ -19,6 +19,14 @@ docs:
 format:
 	black --target-version=py36 --exclude=migrations .
 
+#
+# Utility
+makemessages:
+	cd src/wagtail_site_inheritance && python ../../manage.py makemessages -all
+
+compilemessages:
+	cd src/wagtail_site_inheritance && python ../../manage.py compilemessages
+
 release:
 	rm -rf dist/*
 	python setup.py sdist bdist_wheel

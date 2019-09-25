@@ -19,10 +19,10 @@ class SiteInheritanceAdminForm(WagtailAdminModelForm):
         parent = self.cleaned_data.get("parent", False)
         if not isinstance(site.root_page.specific, parent.root_page.specific_class):
             raise forms.ValidationError(
-                _("Both sites should have the same root_page type")
+                _("Both sites should have the same root_page type.")
             )
         if site.pk == parent.pk:
-            raise forms.ValidationError(_("Cannot inherit from the same site"))
+            raise forms.ValidationError(_("Cannot inherit from the same site."))
 
         return site
 
