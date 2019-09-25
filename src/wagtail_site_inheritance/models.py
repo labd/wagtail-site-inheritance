@@ -44,11 +44,13 @@ class PageInheritanceForm(WagtailAdminPageForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Don't make the fields readonly if this site doesnt have a master site
-        site = self.instance.get_site()
-        if not site or not hasattr(site, 'inheritance_info'):
+        is_inherited = PageInheritanceItem.objects.filter(
+            inherited_page=self.instance
+        ).exists()
+        if not is_inherited:
             return
 
+        # Make fields readonly if page is inherited
         for field_name, field in self.fields.items():
             if field_name not in self.instance.editable_inherited_fields:
                 # Make some fields readonly
