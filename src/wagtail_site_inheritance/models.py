@@ -52,7 +52,7 @@ class PageInheritanceForm(WagtailAdminPageForm):
 
         # Make fields readonly if page is inherited
         for field_name, field in self.fields.items():
-            if field_name not in self.instance.editable_inherited_fields:
+            if field_name in self.instance.inherit_readonly_fields:
                 # Make some fields readonly
                 self.fields[field_name].widget = get_readonly_widget(
                     self.fields[field_name]
@@ -82,5 +82,5 @@ class PageInheritanceMixin:
 
     base_form_class = PageInheritanceForm
 
-    # fields that can be edited in inherited pages
-    editable_inherited_fields = []
+    # fields that should be readonly on inherited pages
+    inherit_readonly_fields = []

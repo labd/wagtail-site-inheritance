@@ -93,7 +93,7 @@ def sync_existing_pages(request, page):
 
     items = models.PageInheritanceItem.objects.filter(page=page)
     if items.exists():
-        customizable_fields = getattr(page, "editable_inherited_fields", [])
+        inherited_fields = getattr(page, "inherit_readonly_fields", [])
         values = _get_copyable_fields(page, skip_fields)
 
         for inheritance_item in items:
@@ -101,7 +101,7 @@ def sync_existing_pages(request, page):
             copy_page = inheritance_item.inherited_page.specific
 
             for field_name, value in values.items():
-                if inheritance_item.modified and field_name in customizable_fields:
+                if inheritance_item.modified and field_name not in inherited_fields:
                     continue
                 setattr(copy_page, field_name, value)
 
