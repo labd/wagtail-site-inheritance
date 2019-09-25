@@ -4,6 +4,7 @@ from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel
 from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.core.models import Page, Site
 
+from wagtail_site_inheritance.forms import get_readonly_widget
 from wagtail_site_inheritance.wagtail_forms import SiteInheritanceAdminForm
 
 
@@ -40,7 +41,6 @@ class PageInheritanceItem(models.Model):
 
 
 class PageInheritanceForm(WagtailAdminPageForm):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -53,9 +53,10 @@ class PageInheritanceForm(WagtailAdminPageForm):
 
         for field_name, field in self.fields.items():
             if field_name not in self.instance.editable_inherited_fields:
-                ...
-                # FIXME: this doesn't work for streamfields...
-                # self.fields[field_name].disabled = True
+                # Make some fields readonly
+                self.fields[field_name].widget = get_readonly_widget(
+                    self.fields[field_name]
+                )
 
 
 class PageInheritanceMixin:
