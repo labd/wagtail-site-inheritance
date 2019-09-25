@@ -66,7 +66,9 @@ class PageInheritanceMixin:
         We do this by providing the site of the page requested instead of the default
         implementation, this will always strip the domain from the URL.
         """
-        return super().relative_url(current_site=self.get_site(), request=None)
+        url_parts = self.get_url_parts(request=request)
+        site_id, root_url, page_path = url_parts
+        return page_path
 
     def get_admin_display_title(self):
         title = super().get_admin_display_title()
