@@ -1,4 +1,9 @@
-from setuptools import find_packages, setup
+import glob
+import os.path
+import subprocess
+
+from setuptools import Command, find_packages, setup
+from setuptools.command.sdist import sdist as _sdist
 
 docs_require = ["sphinx>=1.4.0"]
 
@@ -13,6 +18,42 @@ tests_require = [
     "flake8-blind-except==0.1.1",
     "flake8-debugger==1.4.0",
 ]
+
+# Custom setuptools commands
+class sdist(_sdist):
+    def run(self):
+        self.run_command("prepare")
+        _sdist.run(self)
+
+try:
+    from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
+except ImportError:
+    bdist_wheel = None
+else:
+
+    class bdist_wheel(_bdist_wheel):
+        def run(self):
+            self.run_command("prepare")
+            _bdist_wheel.run(self)
+
+class prepare(Command):
+    user_options = []
+
+    def run(self):
+        self.compile_po_files()
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def compile_po_files(self):
+        for filename in glob.glob("**/*.po", recursive=True):
+            base, __ = os.path.splitext(filename)
+            target = "%s.mo" % base
+            subprocess.run(["msgfmt", filename, "-o%s" % target])
+
 
 setup(
     name="wagtail-site-inheritance",
@@ -43,5 +84,6 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
+    cmdclass={"sdist": sdist, "bdist_wheel": bdist_wheel, "prepare": prepare},
     zip_safe=False,
 )
