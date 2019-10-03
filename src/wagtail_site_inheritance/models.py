@@ -90,3 +90,6 @@ class PageInheritanceMixin:
 
     # fields that should be readonly on inherited pages
     inherit_readonly_fields = []
+
+    # field that shouldn't be updated during copy
+    exclude_fields_in_copy = []

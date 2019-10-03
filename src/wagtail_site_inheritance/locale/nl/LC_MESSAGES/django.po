@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-25 21:57+0000\n"
-"PO-Revision-Date: 2019-09-25 23:57+0200\n"
+"POT-Creation-Date: 2019-10-03 06:29+0000\n"
+"PO-Revision-Date: 2019-10-03 08:29+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: apps.py:7
 msgid "Wagtail Site Inheritance"
@@ -24,12 +24,12 @@ msgstr "Wagtail site overerving"
 
 #: forms.py:13
 #, python-format
-msgid "Read only field for %s."
-msgstr "Alleen lezen veld (%s)."
+msgid "The value of %s is inherited from the parent site."
+msgstr "De waarde van %s wordt overgenomen van de bovenliggende site."
 
 #: forms.py:15
-msgid "Read only field."
-msgstr "Alleen lezen veld."
+msgid "The value of this field is inherited from the parent site."
+msgstr "De waarde van dit veld wordt overgenomen van de bovenliggende site."
 
 #: models.py:13
 msgid "parent site"
@@ -78,5 +78,13 @@ msgstr "Kan niet overerven van dezelfde website."
 msgid "Site Inheritance"
 msgstr "Website overerving"
 
-#~ msgid "%(title)s - (Modified inherited)"
+#, fuzzy
+#~| msgid "%(title)s - (Modified inherited)"
+#~ msgid "This field is inherited."
 #~ msgstr "%(title)s - (Gewijzigd overgenomen)"
+
+#~ msgid "Read only field for %s."
+#~ msgstr "Alleen lezen veld (%s)."
+
+#~ msgid "Read only field."
+#~ msgstr "Alleen lezen veld."
