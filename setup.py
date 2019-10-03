@@ -25,6 +25,7 @@ class sdist(_sdist):
         self.run_command("prepare")
         _sdist.run(self)
 
+
 try:
     from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
 except ImportError:
@@ -35,6 +36,7 @@ else:
         def run(self):
             self.run_command("prepare")
             _bdist_wheel.run(self)
+
 
 class prepare(Command):
     user_options = []

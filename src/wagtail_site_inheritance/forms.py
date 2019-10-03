@@ -10,9 +10,9 @@ def get_readonly_widget(field):
     widget_class = widget.__class__
 
     if field.label:
-        text_display = _("Read only field for %s.") % field.label
+        text_display = _("The value of %s is inherited from the parent site.") % str(field.label).lower()
     else:
-        text_display = _("Read only field.")
+        text_display = _("The value of this field is inherited from the parent site.")
 
     # Add ReadOnlyMixin to this widget instance
     namespaces = {"text_display": text_display}
@@ -39,4 +39,3 @@ class ReadonlyMixin:
         """
             % (original_content, self.text_display)
         )
-
