@@ -22,7 +22,15 @@ class SiteInheritanceAdmin(ModelAdmin):
 modeladmin_register(SiteInheritanceAdmin)
 
 
-# FIXME: This is a working example of the copy / sync methods, it needs refactoring
+@hooks.register("before_delete_page")
+def delete_all_copies_on_post(request, page):
+    if request.method != "POST":
+        return
+
+    for item in models.PageInheritanceItem.objects.filter(page=page):
+        item.inherited_page.specific.delete()
+
+
 @hooks.register("after_edit_page")
 @hooks.register("after_create_page")
 def update_or_create_copies(request, page):
@@ -132,9 +140,6 @@ def _get_copyable_fields(page, skip_fields):
     """
     values = {}
     for field in page._meta.get_fields():
-        # FIXME: Instead of stepping over difficult fields we should copy their
-        # contents too, the wagtail.core.Page.copy() method has some examples on how
-        # to do that.
         if (
             field.name in skip_fields
             or field.auto_created
@@ -144,6 +149,7 @@ def _get_copyable_fields(page, skip_fields):
             continue
 
         values[field.name] = getattr(page, field.name)
+
     # copy child m2m relations
     for related_field in get_all_child_m2m_relations(page):
         if related_field.name in skip_fields:
