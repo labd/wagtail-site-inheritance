@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import OneToOneField
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import get_all_child_m2m_relations, get_all_child_relations
@@ -104,34 +105,36 @@ def sync_existing_pages(request, page):
         inherited_fields = getattr(page, "inherit_readonly_fields", [])
         values = _get_copyable_fields(page, skip_fields)
 
-        for inheritance_item in items:
-            # always get the specific class instance, or the revision will only contain the Page attributes
-            copy_page = inheritance_item.inherited_page.specific
+        # wrap all updates in one transaction to ensure data integrity.
+        with transaction.atomic():
+            for inheritance_item in items:
+                # always get the specific class instance, or the revision will only contain the Page attributes
+                copy_page = inheritance_item.inherited_page.specific
 
-            for field_name, value in values.items():
-                if inheritance_item.modified and field_name not in inherited_fields:
-                    continue
-                setattr(copy_page, field_name, value)
+                for field_name, value in values.items():
+                    if inheritance_item.modified and field_name not in inherited_fields:
+                        continue
+                    setattr(copy_page, field_name, value)
 
-            # Copy child objects
-            for child_relation in get_all_child_relations(page):
-                accessor_name = child_relation.get_accessor_name()
+                # Copy child objects
+                for child_relation in get_all_child_relations(page):
+                    accessor_name = child_relation.get_accessor_name()
 
-                parental_key_name = child_relation.field.attname
-                child_objects = getattr(page, accessor_name, None)
+                    parental_key_name = child_relation.field.attname
+                    child_objects = getattr(page, accessor_name, None)
 
-                if child_objects:
-                    for child_object in child_objects.all():
-                        child_object.pk = None
-                        setattr(child_object, parental_key_name, copy_page.id)
-                        child_object.save()
+                    if child_objects:
+                        for child_object in child_objects.all():
+                            child_object.pk = None
+                            setattr(child_object, parental_key_name, copy_page.id)
+                            child_object.save()
 
-            copy_page.save()
-            revision = copy_page.save_revision(
-                user=request.user,
-                submitted_for_moderation=bool(request.POST.get("action-submit")),
-            )
-            revision.publish()
+                copy_page.save()
+                revision = copy_page.save_revision(
+                    user=request.user,
+                    submitted_for_moderation=bool(request.POST.get("action-submit")),
+                )
+                revision.publish()
 
 
 def _get_copyable_fields(page, skip_fields):
