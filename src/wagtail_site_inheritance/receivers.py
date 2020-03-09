@@ -1,5 +1,6 @@
 from django.db import transaction
 from wagtail.core.signals import page_unpublished
+
 from wagtail_site_inheritance.models import PageInheritanceItem
 
 

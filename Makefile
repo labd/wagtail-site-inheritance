@@ -17,7 +17,8 @@ docs:
 	$(MAKE) -C docs html
 
 format:
-	black --target-version=py36 --exclude=migrations .
+	isort --recursive src tests
+	black src/ tests/
 
 #
 # Utility

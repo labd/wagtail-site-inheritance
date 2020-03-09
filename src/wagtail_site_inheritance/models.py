@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
 from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel
 from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.core.models import Page, Site
@@ -8,13 +7,20 @@ from wagtail.core.models import Page, Site
 from wagtail_site_inheritance.forms import get_readonly_widget
 from wagtail_site_inheritance.wagtail_forms import SiteInheritanceAdminForm
 
+
 class SiteInheritance(models.Model):
     parent = models.ForeignKey(
-        Site, verbose_name=_("parent site"), related_name="site_children", on_delete=models.PROTECT,
-        help_text=_("Choose the site to inherit from.")
+        Site,
+        verbose_name=_("parent site"),
+        related_name="site_children",
+        on_delete=models.PROTECT,
+        help_text=_("Choose the site to inherit from."),
     )
     site = models.OneToOneField(
-        Site, verbose_name=_("child site"), related_name="inheritance_info", on_delete=models.CASCADE
+        Site,
+        verbose_name=_("child site"),
+        related_name="inheritance_info",
+        on_delete=models.CASCADE,
     )
 
     base_form_class = SiteInheritanceAdminForm
@@ -23,7 +29,7 @@ class SiteInheritance(models.Model):
     def __str__(self):
         return _("SiteInheritance from %(parent_site)s to %(child_site)s") % {
             "parent_site": self.parent,
-            "child_site": self.site
+            "child_site": self.site,
         }
 
 
@@ -39,10 +45,12 @@ class PageInheritanceItem(models.Model):
         unique_together = [("page", "inherited_page")]
 
     def __str__(self):
-        return _("Page: %(title)s, inherited from: %(inherited_title)s, modified: %(modified)s") % {
+        return _(
+            "Page: %(title)s, inherited from: %(inherited_title)s, modified: %(modified)s"
+        ) % {
             "title": self.page.title,
             "inherited_title": self.inherited_page.title,
-            "modified": self.modified
+            "modified": self.modified,
         }
 
 

@@ -35,7 +35,7 @@ class SiteInheritanceAdminForm(WagtailAdminModelForm):
         """
         instance = super().save(**kwargs)
         from wagtail_site_inheritance.models import PageInheritanceItem  # cyclic import
-        
+
         for fn in hooks.get_hooks("after_create_site_inheritance"):
             fn(instance.site, instance.parent)
 

@@ -1,7 +1,6 @@
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-
 __all__ = ["get_readonly_widget"]
 
 
@@ -10,7 +9,10 @@ def get_readonly_widget(field):
     widget_class = widget.__class__
 
     if field.label:
-        text_display = _("The value of %s is inherited from the parent site.") % str(field.label).lower()
+        text_display = (
+            _("The value of %s is inherited from the parent site.")
+            % str(field.label).lower()
+        )
     else:
         text_display = _("The value of this field is inherited from the parent site.")
 
