@@ -39,7 +39,6 @@ setup(
     install_requires=["Django>=2.2", "wagtail>=2.6"],
     tests_require=tests_require,
     extras_require={"docs": docs_require, "test": tests_require},
-    use_scm_version=True,
     entry_points={},
     package_dir={"": "src"},
     packages=find_packages("src"),
