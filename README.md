@@ -10,7 +10,7 @@
 ## Installation
 
 ```shell
-pip install wagtail_site_inheritance
+pip install wagtail-site-inheritance
 ```
 
 
