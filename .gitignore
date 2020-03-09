@@ -8,6 +8,7 @@
 .python-version
 .venv
 .idea/
+.vscode/
 
 /build/
 /dist/
