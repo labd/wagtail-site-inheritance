@@ -51,13 +51,13 @@ def update_or_create_copies(request, page):
     if not is_publishing:
         return
 
-    create_non_existing_pages(request, page, parent_page)
-    sync_existing_pages(request, page)
-
     # Mark edited page as modified
     models.PageInheritanceItem.objects.filter(
-        inherited_page=page, modified=False
+        page=page, modified=False
     ).update(modified=True)
+
+    create_non_existing_pages(request, page, parent_page)
+    sync_existing_pages(request, page)
 
 
 def create_non_existing_pages(request, page, parent_page):
@@ -93,6 +93,7 @@ def sync_existing_pages(request, page):
         "url_path",
         "path",
         "index_entries",
+        "slug",
     ]
     skip_fields = (
         default_exclude_fields
