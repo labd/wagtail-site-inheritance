@@ -4,7 +4,7 @@ from django.conf import settings
 def pytest_configure():
     settings.configure(
         MIDDLEWARE_CLASSES=[],
-        SECRET_KEY="mqprmJT9uyGvOqtFZZWpDQH2uGgamX83QpsyyvjhHcHqtZJKouNlhHX3Xf2lASPS",
+        SECRET_KEY="mqprmJT9uxxxxqtFZZWpDQH2uGgamX83QpsyyvjxxxxxtZJKouNlhHX3Xfxxxxxx",
         CACHES={
             "default": {
                 "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
