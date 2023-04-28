@@ -1,19 +1,10 @@
-from mock import patch
-
 from tests.fixtures import *
 from tests.testapp.models import HomePage
 from wagtail_site_inheritance.wagtail_hooks import update_or_create_copies
 
-if wagtail_version >= (3, 0):
-    from wagtail.models import Page
-else:
-    from wagtail.core.models import Page
-
 
 @pytest.mark.django_db
-@patch.object(Page, "creatable_subpage_models")
-def test_update_or_create_copies(mock_creatable, site_setup, rf):
-    mock_creatable.return_value = True
+def test_update_or_create_copies(site_setup, rf):
     form_data = {"action-publish": "action-publish"}
     req = rf.post(
         path=f"/cms/pages/{site_setup.main_site.root_page.id}/edit/", data=form_data
