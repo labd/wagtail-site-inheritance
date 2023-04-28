@@ -5,12 +5,14 @@ from setuptools import find_packages, setup
 docs_require = ["sphinx>=1.4.0"]
 
 tests_require = [
-    "coverage[toml]==5.0.3",
-    "freezegun==0.3.15",
-    "pytest==5.3.5",
-    "pytest-django==3.8.0",
-    "pytest-cov==2.8.1",
-    "wagtail-factories==2.0.0",
+    "coverage[toml]==5.2.1",
+    "factory-boy==3.2.0",
+    "freezegun==1.1.0",
+    "pytest==6.2.4",
+    "pytest-django==4.4.0",
+    "pytest-cov==2.12.1",
+    "wagtail-factories==2.0.1",
+    "mock==4.0.3,"
     # Linting
     "isort[pyproject]==4.3.21",
     "flake8==3.7.9",
@@ -36,7 +38,7 @@ setup(
     url="https://github.com/labd/wagtail-site-inheritance",
     author="Lab Digital",
     author_email="opensource@labdigital.nl",
-    install_requires=["Django>=2.2", "wagtail>=2.6"],
+    install_requires=["Django>=2.2", "wagtail>=2.16.3,<=3.0.3"],
     tests_require=tests_require,
     extras_require={"docs": docs_require, "test": tests_require},
     entry_points={},
