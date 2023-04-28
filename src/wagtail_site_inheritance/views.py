@@ -1,8 +1,13 @@
 from django.db import transaction
+from wagtail import VERSION as wagtail_version
 from wagtail.contrib.modeladmin.views import DeleteView
-from wagtail.core.models import Page
 
 from wagtail_site_inheritance.models import PageInheritanceItem
+
+if wagtail_version >= (3, 0):
+    from wagtail.models import Page
+else:
+    from wagtail.core.models import Page
 
 
 class SiteInheritanceDeleteView(DeleteView):

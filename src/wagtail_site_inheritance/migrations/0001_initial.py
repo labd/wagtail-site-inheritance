@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -73,6 +72,8 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"unique_together": {("page", "inherited_page")},},
+            options={
+                "unique_together": {("page", "inherited_page")},
+            },
         ),
     ]
