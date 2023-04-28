@@ -12,7 +12,7 @@ tests_require = [
     "pytest-django==4.4.0",
     "pytest-cov==2.12.1",
     "wagtail-factories==2.0.1",
-    "mock==4.0.3,"
+    "mock==4.0.3",
     # Linting
     "isort[pyproject]==4.3.21",
     "flake8==3.7.9",
@@ -56,8 +56,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
     zip_safe=False,
