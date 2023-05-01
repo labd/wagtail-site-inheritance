@@ -1,11 +1,16 @@
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from wagtail import VERSION as wagtail_version
 from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel
 from wagtail.admin.forms import WagtailAdminPageForm
 
 from wagtail_site_inheritance.forms import get_readonly_widget
 from wagtail_site_inheritance.wagtail_forms import SiteInheritanceAdminForm
+
+try:
+    from django.utils.translation import ugettext_lazy as _
+except ImportError:
+    from django.utils.translation import gettext_lazy as _
+
 
 if wagtail_version >= (3, 0):
     from wagtail.models import Page, Site

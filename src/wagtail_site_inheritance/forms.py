@@ -1,5 +1,9 @@
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+
+try:
+    from django.utils.translation import ugettext_lazy as _
+except ImportError:
+    from django.utils.translation import gettext_lazy as _
 
 __all__ = ["get_readonly_widget"]
 
