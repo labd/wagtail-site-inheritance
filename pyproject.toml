@@ -7,9 +7,6 @@ build-backend = "setuptools.build_meta"
 branch = true
 source = ["wagtail_site_inheritance"]
 
-[tool.coverage.paths]
-source = ["src", ".tox/*/site-packages"]
-
 [tool.coverage.report]
 show_missing = true
 
