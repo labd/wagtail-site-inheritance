@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.sites",
     "django.contrib.staticfiles",
-    "src.wagtail_site_inheritance",
+    "wagtail_site_inheritance",
     "tests.testapp",
 ]
 

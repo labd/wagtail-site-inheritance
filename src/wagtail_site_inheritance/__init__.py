@@ -1,3 +1,13 @@
+from django.apps import AppConfig
+from django.utils.translation import gettext_lazy as _
+
 __version__ = "0.0.1"
 
-default_app_config = "wagtail_site_inheritance.apps.WagtailSiteInheritanceAppConfig"
+
+class WagtailSiteInheritanceAppConfig(AppConfig):
+    name = "wagtail_site_inheritance"
+    verbose_name = _("Wagtail Site Inheritance")
+
+    def ready(self):
+        from wagtail_site_inheritance.receivers import register_handlers  # noqa
+        register_handlers()

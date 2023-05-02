@@ -38,7 +38,10 @@ setup(
     url="https://github.com/labd/wagtail-site-inheritance",
     author="Lab Digital",
     author_email="opensource@labdigital.nl",
-    install_requires=["Django>=2.2", "wagtail>=2.16.3,<=3.0.3"],
+    install_requires=[
+        "Django>=2.2",
+        "wagtail>=2.16,<4.0"
+    ],
     tests_require=tests_require,
     extras_require={"docs": docs_require, "test": tests_require},
     entry_points={},
