@@ -62,6 +62,8 @@ jobs:
     needs: [test]
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - uses: actions/download-artifact@master
       with:
         name: coverage-data
