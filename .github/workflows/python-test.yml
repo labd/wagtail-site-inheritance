@@ -67,4 +67,5 @@ jobs:
     - name: Prepare Coverage report
       run: |
         coverage combine
+        coverage xml
         coverage report -m --skip-covered
