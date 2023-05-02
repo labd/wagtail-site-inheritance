@@ -42,7 +42,7 @@ jobs:
         TOXENV: py${{ matrix.python }}-django${{ matrix.django }}-wagtail${{ matrix.wagtail }}
     - name: Prepare artifacts
       run: mkdir .coverage-data && mv .coverage.* .coverage-data/
-    - uses: actions/upload-artifact@master
+    - uses: actions/upload-artifact@v3
       with:
         name: coverage-data
         path: .coverage-data/
@@ -54,7 +54,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v3
       with:
         name: coverage-data
         path: .
@@ -63,6 +63,8 @@ jobs:
       with:
         python-version: 3.8
     - name: Install dependencies
-      run: python -m pip install --upgrade pip tox
+      run: python -m pip install --upgrade pip coverage[toml]
     - name: Prepare Coverage report
-      run: tox -e coverage-report
+      run: |
+        coverage combine
+        coverage report -m --skip-covered
