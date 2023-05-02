@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.db.models import OneToOneField
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from modelcluster.models import get_all_child_m2m_relations, get_all_child_relations
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.core import hooks

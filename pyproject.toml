@@ -8,7 +8,10 @@ branch = true
 source = ["wagtail_site_inheritance"]
 
 [tool.coverage.paths]
-source = ["src", ".tox/*/site-packages"]
+source = [
+    "src/wagtail_site_inheritance",
+    "/home/runner/work/wagtail-site-inheritance/wagtail-site-inheritance/.tox/*/lib/python*/site-packages/wagtail_site_inheritance",
+]
 
 [tool.coverage.report]
 show_missing = true
