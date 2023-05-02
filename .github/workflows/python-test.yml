@@ -27,7 +27,7 @@ jobs:
         django: ["3.2", "4.0"]
         wagtail: ["2.16", "3.0"]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Set up Python ${{ matrix.python }}
