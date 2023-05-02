@@ -10,4 +10,5 @@ class WagtailSiteInheritanceAppConfig(AppConfig):
 
     def ready(self):
         from wagtail_site_inheritance.receivers import register_handlers  # noqa
+
         register_handlers()
