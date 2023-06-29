@@ -52,7 +52,7 @@ def update_or_create_copies(request, page):
         return
 
     # Mark edited page as modified
-    models.PageInheritanceItem.objects.filter(page=page, modified=False).update(
+    models.PageInheritanceItem.objects.filter(inherited_page=page, modified=False).update(
         modified=True
     )
 
