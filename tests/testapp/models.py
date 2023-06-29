@@ -37,4 +37,3 @@ class HomePage(PageInheritanceMixin, Page):
                 pass
 
         super().full_clean(*args, **kwargs)
-
