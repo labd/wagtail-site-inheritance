@@ -31,7 +31,7 @@ with open("README.md") as fh:
 
 setup(
     name="wagtail-site-inheritance",
-    version="1.0.0",
+    version="1.1.0",
     description="Site Inheritance for Wagtail",
     long_description=long_description,
     long_description_content_type="text/markdown",
